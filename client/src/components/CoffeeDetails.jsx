@@ -1,14 +1,64 @@
-import React from 'react';
-import { AiFillLike } from 'react-icons/ai';
+import React, { useContext, useEffect, useState } from 'react';
+import { AiFillDislike, AiFillLike } from 'react-icons/ai';
 import { GiReturnArrow } from 'react-icons/gi';
 import { useLoaderData, useNavigate } from 'react-router';
+import { AuthContext } from '../provider/AuthContext';
+import axios from 'axios';
 
 const CoffeeDetails = () => {
   const { data: coffeeDetails } = useLoaderData();
-  // console.log(coffeeDetails);
+
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { photo, quantity, price, name, details, taste, supplier, likedBy } =
-    coffeeDetails || {};
+  const {
+    photo,
+    quantity,
+    price,
+    name,
+    details,
+    taste,
+    supplier,
+    likedBy,
+    email,
+    _id,
+  } = coffeeDetails || {};
+  // console.log(_id);
+
+  const [liked, setLiked] = useState(likedBy.includes(user?.email));
+  const [likeCount, setLikeCount] = useState(likedBy.length);
+
+  // jodi value aste time lage tai jonne ami eta korchi
+  useEffect(() => {
+    setLiked(likedBy.includes(user?.email));
+  }, [likedBy, user]);
+
+  console.log('is Liked?:', liked);
+
+  // handle like/dislike
+  const handleLike = () => {
+    if (user?.email === email) return alert('Lojja kore na vai');
+
+    // handle like toggle api fetch call
+    axios
+      .patch(`${import.meta.env.VITE_API_URL}/like/${_id}`, {
+        email: user?.email,
+      })
+      .then(data => {
+        console.log(data.data);
+
+        const isLike = data?.data?.liked;
+
+        // update like state
+        setLiked(isLike);
+
+        // update like count state
+        setLikeCount(prev => (isLike ? prev + 1 : prev - 1));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="max-w-4xl mx-auto mt-10 bg-[#F4F3F0]">
       <div className="flex items-center justify-evenly pt-3">
@@ -36,11 +86,27 @@ const CoffeeDetails = () => {
             <span className="font-semibold">Details:</span> {details}
           </p>
           <p className="raleway mt-1">
-            <span className="font-semibold">Likes:</span> {likedBy.length}
+            <span className="font-semibold">Likes:</span> {likeCount}
           </p>
           <div className="flex gap-3 mt-3">
-            <button className="px-3 py-0.5 bg-gray-200 cursor-pointer rounded-md active:text-blue-700">
-              <AiFillLike size={22} />
+            <button
+              onClick={handleLike}
+              className="px-3 py-0.5 bg-gray-200 cursor-pointer rounded-md active:text-blue-700"
+            >
+              {liked ? (
+                <>
+                  <div className="relative group ">
+                    <AiFillLike size={22} className="text-blue-700" />
+
+                    {/* Tooltip */}
+                    <span className="absolute mb-1 w-32 -left-18 -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-black text-white text-xs px-1 py-1 rounded">
+                      Already Liked.Do you want Dislike?
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <AiFillLike size={22} />
+              )}
             </button>
             <button className="px-3 py-0.5 bg-green-600 cursor-pointer text-white rounded-md">
               Order
