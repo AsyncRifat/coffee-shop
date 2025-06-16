@@ -10,6 +10,7 @@ import SignUp from '../pages/SignUp';
 import Users from '../components/Users';
 import PrivateRoute from '../provider/PrivateRoute';
 import axios from 'axios';
+import MyAddCoffees from '../components/MyAddCoffees';
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,17 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <Users />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'my-added-coffee/:email',
+        HydrateFallback: Loading,
+        loader: ({ params }) =>
+          axios(`${import.meta.env.VITE_API_URL}/my-coffees/${params.email}`),
+        element: (
+          <PrivateRoute>
+            <MyAddCoffees />
           </PrivateRoute>
         ),
       },

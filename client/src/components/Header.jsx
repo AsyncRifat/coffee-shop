@@ -24,18 +24,6 @@ const Header = () => {
         Home
       </NavLink>
       {user ? (
-        ''
-      ) : (
-        <>
-          <NavLink to="/sign-in" className="p-2 md:ml-1">
-            Sign In
-          </NavLink>
-          <NavLink to="/sign-up" className="p-2">
-            Sign Up
-          </NavLink>
-        </>
-      )}
-      {user && (
         <>
           <NavLink to="/addCoffee" className="p-2">
             Add Coffee
@@ -43,7 +31,7 @@ const Header = () => {
           <NavLink to="/users" className="p-2">
             Users
           </NavLink>
-          <NavLink to="/" className="p-2">
+          <NavLink to={`/my-added-coffee/${user?.email}`} className="p-2">
             My Added coffee's
           </NavLink>
           <NavLink to="/" className="p-2">
@@ -51,7 +39,13 @@ const Header = () => {
           </NavLink>
 
           <div className="rounded-full border-3 border-gray-400 mx-3">
-            {user?.photoURL && <img className='w-6 rounded-full' src={user?.photoURL} alt="avatar" />}
+            {user?.photoURL && (
+              <img
+                className="w-6 rounded-full"
+                src={user?.photoURL}
+                alt="avatar"
+              />
+            )}
           </div>
 
           <Link
@@ -60,6 +54,15 @@ const Header = () => {
           >
             Log Out
           </Link>
+        </>
+      ) : (
+        <>
+          <NavLink to="/sign-in" className="p-2 md:ml-1">
+            Sign In
+          </NavLink>
+          <NavLink to="/sign-up" className="p-2">
+            Sign Up
+          </NavLink>
         </>
       )}
     </>

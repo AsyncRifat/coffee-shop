@@ -6,7 +6,7 @@ import { AuthContext } from '../provider/AuthContext';
 const AddCoffee = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  console.log(user.email);
+  // console.log(user.email);
   const handleAddCoffee = e => {
     e.preventDefault();
 
@@ -60,6 +60,7 @@ const AddCoffee = () => {
                 name="name"
                 className="input w-full"
                 placeholder="Enter coffee name"
+                required
               />
             </fieldset>
             <fieldset className="fieldset rounded-box p-2">
@@ -69,6 +70,7 @@ const AddCoffee = () => {
                 name="quantity"
                 className="input w-full"
                 placeholder="Enter coffee Quantity"
+                required
               />
             </fieldset>
             <fieldset className="fieldset rounded-box p-2">
@@ -78,6 +80,7 @@ const AddCoffee = () => {
                 name="supplier"
                 className="input w-full"
                 placeholder="Enter coffee supplier"
+                required
               />
             </fieldset>
             <fieldset className="fieldset rounded-box p-2">
@@ -87,6 +90,7 @@ const AddCoffee = () => {
                 name="taste"
                 className="input w-full"
                 placeholder="Enter coffee taste"
+                required
               />
             </fieldset>
             <fieldset className="fieldset rounded-box p-2">
@@ -96,6 +100,7 @@ const AddCoffee = () => {
                 name="price"
                 className="input w-full"
                 placeholder="Price per cup"
+                required
               />
             </fieldset>
             <fieldset className="fieldset rounded-box p-2">
@@ -105,6 +110,7 @@ const AddCoffee = () => {
                 name="details"
                 className="input w-full"
                 placeholder="Enter coffee details"
+                required
               />
             </fieldset>
           </div>
@@ -116,6 +122,7 @@ const AddCoffee = () => {
                 name="photo"
                 className="input w-full"
                 placeholder="Enter photo URL"
+                required
               />
             </fieldset>
           </div>

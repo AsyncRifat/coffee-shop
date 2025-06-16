@@ -1,4 +1,5 @@
 import React from 'react';
+import { AiFillLike } from 'react-icons/ai';
 import { GiReturnArrow } from 'react-icons/gi';
 import { useLoaderData, useNavigate } from 'react-router';
 
@@ -34,9 +35,17 @@ const CoffeeDetails = () => {
           <p className="raleway">
             <span className="font-semibold">Details:</span> {details}
           </p>
-          <p className="raleway mt-2">
+          <p className="raleway mt-1">
             <span className="font-semibold">Likes:</span> {likedBy.length}
           </p>
+          <div className="flex gap-3 mt-3">
+            <button className="px-3 py-0.5 bg-gray-200 cursor-pointer rounded-md active:text-blue-700">
+              <AiFillLike size={22} />
+            </button>
+            <button className="px-3 py-0.5 bg-green-600 cursor-pointer text-white rounded-md">
+              Order
+            </button>
+          </div>
         </div>
       </div>
 

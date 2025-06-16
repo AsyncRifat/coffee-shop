@@ -5,7 +5,7 @@ import { AuthContext } from '../provider/AuthContext';
 import axios from 'axios';
 
 const SignIn = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, googleSignUp } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSignIn = e => {
@@ -46,6 +46,18 @@ const SignIn = () => {
         console.log(error.message);
       });
   };
+
+  // google signIn
+  const handleGoogleSignUp = () => {
+    googleSignUp()
+      .then(result => {
+        console.log(result.user);
+        navigate('/');
+      })
+      .catch(error => {
+        console.log(error?.message || 'Something went wrong');
+      });
+  };
   return (
     <>
       <div className="mx-auto max-w-md p-4 rounded-md shadow sm:p-8 bg-gray-50 text-gray-800 raleway mt-5 md:mt-20">
@@ -64,6 +76,23 @@ const SignIn = () => {
 
         <div className=" w-full my-4">
           <hr className=" text-gray-300" />
+        </div>
+
+        <div className="my-6 space-y-4">
+          <button
+            onClick={handleGoogleSignUp}
+            type="button"
+            className="flex items-center justify-center w-full p-2 space-x-4 border rounded-md focus:ring-2 focus:ring-offset-1 dark:border-gray-600 focus:dark:ring-violet-600"
+          >
+            <FcGoogle size={28} />
+            <p>Login with Google</p>
+          </button>
+        </div>
+
+        <div className="flex items-center w-full my-4">
+          <hr className="w-full text-gray-600" />
+          <p className="px-3 text-gray-600">OR</p>
+          <hr className="w-full text-gray-600" />
         </div>
 
         <form onSubmit={handleSignIn} className="space-y-8">
