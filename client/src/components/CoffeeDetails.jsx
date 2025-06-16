@@ -3,13 +3,14 @@ import { GiReturnArrow } from 'react-icons/gi';
 import { useLoaderData, useNavigate } from 'react-router';
 
 const CoffeeDetails = () => {
-  const coffeeDetails = useLoaderData();
+  const { data: coffeeDetails } = useLoaderData();
+  // console.log(coffeeDetails);
   const navigate = useNavigate();
-  const { photo, quantity, price, name, details, taste, supplier } =
-    coffeeDetails;
+  const { photo, quantity, price, name, details, taste, supplier, likedBy } =
+    coffeeDetails || {};
   return (
     <div className="max-w-4xl mx-auto mt-10 bg-[#F4F3F0]">
-      <div className="flex items-center justify-evenly ">
+      <div className="flex items-center justify-evenly pt-3">
         <figure>
           <img src={photo} alt="Coffee Cup" />
         </figure>
@@ -33,8 +34,12 @@ const CoffeeDetails = () => {
           <p className="raleway">
             <span className="font-semibold">Details:</span> {details}
           </p>
+          <p className="raleway mt-2">
+            <span className="font-semibold">Likes:</span> {likedBy.length}
+          </p>
         </div>
       </div>
+
       <div
         onClick={() => navigate('/')}
         className="card-actions justify-end m-1"

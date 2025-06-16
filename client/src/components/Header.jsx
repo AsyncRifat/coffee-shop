@@ -16,7 +16,7 @@ const Header = () => {
         console.log(error);
       });
   };
-  const userInfo = <div>{user && <h2>{user?.email}</h2>}</div>;
+  // const userInfo = <div>{user && <h2>{user?.email}</h2>}</div>;
 
   const link = (
     <>
@@ -43,9 +43,6 @@ const Header = () => {
           <NavLink to="/users" className="p-2">
             Users
           </NavLink>
-          <NavLink to="/users2" className="p-2">
-            Users2(tanStack)
-          </NavLink>
           <NavLink to="/" className="p-2">
             My Added coffee's
           </NavLink>
@@ -53,8 +50,8 @@ const Header = () => {
             My Orders
           </NavLink>
 
-          <div className="w-8 h-8 rounded-full border mx-3">
-            {user?.photoURL && <img src={user?.photoURL} alt="avatar" />}
+          <div className="rounded-full border-3 border-gray-400 mx-3">
+            {user?.photoURL && <img className='w-6 rounded-full' src={user?.photoURL} alt="avatar" />}
           </div>
 
           <Link

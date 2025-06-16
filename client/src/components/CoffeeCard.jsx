@@ -11,39 +11,39 @@ const CoffeeCard = ({ coffee, coffees, setCoffees }) => {
   const { photo, quantity, price, name, _id } = coffee;
 
   const handleDelete = id => {
-    // console.log(id);
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    }).then(result => {
-      // console.log(result.isConfirmed);
-      if (result.isConfirmed) {
-        // start deleting coffee
-        fetch(`http://localhost:3000/coffees/${_id}`, {
-          method: 'DELETE',
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.deletedCount) {
-              Swal.fire({
-                title: 'Deleted!',
-                text: 'Your Coffee has been deleted.',
-                icon: 'success',
-              });
-              // console.log('after delete', data);
+    console.log(id);
+    // Swal.fire({
+    //   title: 'Are you sure?',
+    //   text: "You won't be able to revert this!",
+    //   icon: 'warning',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   cancelButtonColor: '#d33',
+    //   confirmButtonText: 'Yes, delete it!',
+    // }).then(result => {
+    //   // console.log(result.isConfirmed);
+    //   if (result.isConfirmed) {
+    //     // start deleting coffee
+    //     fetch(`http://localhost:3000/coffees/${_id}`, {
+    //       method: 'DELETE',
+    //     })
+    //       .then(res => res.json())
+    //       .then(data => {
+    //         if (data.deletedCount) {
+    //           Swal.fire({
+    //             title: 'Deleted!',
+    //             text: 'Your Coffee has been deleted.',
+    //             icon: 'success',
+    //           });
+    //           // console.log('after delete', data);
 
-              //  remove the coffee from the state
-              const remainingCoffees = coffees.filter(cof => cof._id !== id);
-              setCoffees(remainingCoffees);
-            }
-          });
-      }
-    });
+    //           //  remove the coffee from the state
+    //           const remainingCoffees = coffees.filter(cof => cof._id !== id);
+    //           setCoffees(remainingCoffees);
+    //         }
+    //       });
+    //   }
+    // });
   };
 
   return (

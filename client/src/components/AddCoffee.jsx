@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../provider/AuthContext';
 
 const AddCoffee = () => {
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  console.log(user.email);
   const handleAddCoffee = e => {
     e.preventDefault();
 
     const form = e.target;
     const formData = new FormData(form);
     const newCoffee = Object.fromEntries(formData.entries());
-    // console.log(newCoffee);
+    newCoffee.email = user?.email;
+    newCoffee.likedBy = [];
+    console.log(newCoffee);
 
-    //  send coffee data to the db
-    fetch('http://localhost:3000/coffees', {
+    // save coffee data
+    fetch(`${import.meta.env.VITE_API_URL}/add-coffee`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -22,13 +29,15 @@ const AddCoffee = () => {
       .then(data => {
         if (data.insertedId) {
           Swal.fire({
-            title: 'Coffee added successfully!',
+            position: 'top-end',
             icon: 'success',
-            draggable: true,
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500,
           });
-          // console.log('After adding coffee to db:', data);
-          form.reset();
         }
+        form.reset();
+        navigate('/');
       });
   };
 

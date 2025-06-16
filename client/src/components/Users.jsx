@@ -8,39 +8,39 @@ const Users = () => {
   const [users, setUsers] = useState(usersPromise);
 
   const handleDelete = id => {
-    // console.log(id);
+    console.log(id);
 
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    }).then(result => {
-      // console.log(result.isConfirmed);
+    // Swal.fire({
+    //   title: 'Are you sure?',
+    //   text: "You won't be able to revert this!",
+    //   icon: 'warning',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   cancelButtonColor: '#d33',
+    //   confirmButtonText: 'Yes, delete it!',
+    // }).then(result => {
+    //   // console.log(result.isConfirmed);
 
-      if (result.isConfirmed) {
-        fetch(`http://localhost:3000/users/${id}`, {
-          method: 'DELETE',
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.deletedCount) {
-              const remainingUsers = users.filter(user => user._id !== id);
-              setUsers(remainingUsers);
+    //   if (result.isConfirmed) {
+    //     fetch(`http://localhost:3000/users/${id}`, {
+    //       method: 'DELETE',
+    //     })
+    //       .then(res => res.json())
+    //       .then(data => {
+    //         if (data.deletedCount) {
+    //           const remainingUsers = users.filter(user => user._id !== id);
+    //           setUsers(remainingUsers);
 
-              Swal.fire({
-                title: 'Deleted!',
-                text: 'Your user has been deleted.',
-                icon: 'success',
-              });
-              // console.log('After deleted', data);
-            }
-          });
-      }
-    });
+    //           Swal.fire({
+    //             title: 'Deleted!',
+    //             text: 'Your user has been deleted.',
+    //             icon: 'success',
+    //           });
+    //           // console.log('After deleted', data);
+    //         }
+    //       });
+    //   }
+    // });
   };
 
   return (

@@ -13,30 +13,30 @@ const UpdateCoffee = () => {
     const form = e.target;
     const fromData = new FormData(form);
     const updatedCoffee = Object.fromEntries(fromData.entries());
-    // console.log(updatedCoffee);
+    console.log(updatedCoffee);
 
     // send Updated Coffee data to the db
-    fetch(`http://localhost:3000/coffees/${_id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedCoffee),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.modifiedCount) {
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Your coffee updated successfully',
-            showConfirmButton: false,
-            timer: 1000,
-          });
+    // fetch(`http://localhost:3000/coffees/${_id}`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(updatedCoffee),
+    // })
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     if (data.modifiedCount) {
+    //       Swal.fire({
+    //         position: 'top-end',
+    //         icon: 'success',
+    //         title: 'Your coffee updated successfully',
+    //         showConfirmButton: false,
+    //         timer: 1000,
+    //       });
 
-          // console.log('after update data', data);
-        }
-      });
+    //       // console.log('after update data', data);
+    //     }
+    //   });
   };
 
   return (

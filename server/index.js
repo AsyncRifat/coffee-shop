@@ -1,8 +1,13 @@
 const express = require('express');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const cors = require('cors');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 3000;
+
+// middleware
+app.use(cors());
+app.use(express.json());
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(process.env.MONGODB_URI, {
@@ -23,6 +28,24 @@ async function run() {
       const allCoffee = await coffeeCollection.find().toArray();
       // console.log(allCoffee);
       res.send(allCoffee);
+    });
+
+    // create a coffee data in database through post request
+    app.post('/add-coffee', async (req, res) => {
+      const coffeeData = req.body;
+      const result = await coffeeCollection.insertOne(coffeeData);
+      console.log(result);
+
+      res.status(201).send({ ...result, message: 'paice vai' });
+    });
+
+    // get a single coffee
+    app.get('/coffee/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const coffee = await coffeeCollection.findOne(query);
+      console.log(coffee);
+      res.send(coffee);
     });
 
     // Send a ping to confirm a successful connection

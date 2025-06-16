@@ -8,8 +8,8 @@ import CoffeeDetails from '../components/CoffeeDetails';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import Users from '../components/Users';
-import Users2 from '../components/Users2';
 import PrivateRoute from '../provider/PrivateRoute';
+import axios from 'axios';
 
 export const router = createBrowserRouter([
   {
@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
       {
         index: true,
         HydrateFallback: Loading,
-        loader: () => fetch('http://localhost:3000/coffees'),
+        loader: () => fetch(`${import.meta.env.VITE_API_URL}/coffees`),
         Component: Home,
       },
       {
@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
         path: 'coffee/:id',
         HydrateFallback: Loading,
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/coffees/${params.id}`),
+          axios(`${import.meta.env.VITE_API_URL}/coffee/${params.id}`),
         element: (
           <PrivateRoute>
             <CoffeeDetails />
@@ -43,12 +43,22 @@ export const router = createBrowserRouter([
       },
       {
         path: 'updateCoffee/:id',
-        HydrateFallback: Loading,
-        loader: ({ params }) =>
-          fetch(`http://localhost:3000/coffees/${params.id}`),
+        // HydrateFallback: Loading,
+        // loader: ({ params }) =>
+        //   fetch(`http://localhost:3000/coffees/${params.id}`),
         element: (
           <PrivateRoute>
             <UpdateCoffee />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'users',
+        // HydrateFallback: Loading,
+        // loader: () => fetch('http://localhost:3000/users'),
+        element: (
+          <PrivateRoute>
+            <Users />
           </PrivateRoute>
         ),
       },
@@ -61,24 +71,6 @@ export const router = createBrowserRouter([
       {
         path: 'sign-up',
         Component: SignUp,
-      },
-      {
-        path: 'users',
-        HydrateFallback: Loading,
-        loader: () => fetch('http://localhost:3000/users'),
-        element: (
-          <PrivateRoute>
-            <Users />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: 'users2',
-        element: (
-          <PrivateRoute>
-            <Users2 />
-          </PrivateRoute>
-        ),
       },
     ],
   },
