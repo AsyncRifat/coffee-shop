@@ -6,10 +6,11 @@ import { AuthContext } from '../provider/AuthContext';
 import axios from 'axios';
 
 const CoffeeDetails = () => {
-  const { data: coffeeDetails } = useLoaderData();
+  const { data } = useLoaderData();
 
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [coffeeDetails, setCoffeeDetails] = useState(data);
   const {
     photo,
     quantity,
@@ -32,7 +33,7 @@ const CoffeeDetails = () => {
     setLiked(likedBy.includes(user?.email));
   }, [likedBy, user]);
 
-  console.log('is Liked?:', liked);
+  // console.log('is Liked?:', liked);
 
   // handle like/dislike
   const handleLike = () => {
@@ -44,7 +45,7 @@ const CoffeeDetails = () => {
         email: user?.email,
       })
       .then(data => {
-        console.log(data.data);
+        // console.log(data.data);
 
         const isLike = data?.data?.liked;
 
@@ -56,6 +57,25 @@ const CoffeeDetails = () => {
       })
       .catch(err => {
         console.log(err);
+      });
+  };
+
+  const handleOrder = () => {
+    if (user?.email === email) return alert('its yours . not working');
+
+    const orderInfo = {
+      coffeeId: _id,
+      customerEmail: user?.email,
+    };
+
+    // save order info in db
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/place-order/${_id}`, orderInfo)
+      .then(data => {
+        console.log(data);
+        setCoffeeDetails(prev => {
+          return { ...prev, quantity: prev.quantity - 1 };
+        });
       });
   };
 
@@ -108,7 +128,10 @@ const CoffeeDetails = () => {
                 <AiFillLike size={22} />
               )}
             </button>
-            <button className="px-3 py-0.5 bg-green-600 cursor-pointer text-white rounded-md">
+            <button
+              onClick={handleOrder}
+              className="px-3 py-0.5 bg-green-600 cursor-pointer text-white rounded-md"
+            >
               Order
             </button>
           </div>

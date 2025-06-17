@@ -23,6 +23,7 @@ async function run() {
     // Connect to the "CoffeeDB" database and collection
     const database = client.db('coffee-store');
     const coffeeCollection = database.collection('coffees');
+    const orderCollection = database.collection('orders');
 
     app.get('/coffees', async (req, res) => {
       const allCoffee = await coffeeCollection.find().toArray();
@@ -33,6 +34,11 @@ async function run() {
     // create a coffee data in database through post request
     app.post('/add-coffee', async (req, res) => {
       const coffeeData = req.body;
+
+      // order k manage korar jonno number e convert kore DB te dilam
+      const quantity = coffeeData.quantity;
+      coffeeData.quantity = parseInt(quantity);
+
       const result = await coffeeCollection.insertOne(coffeeData);
       console.log(result);
 
@@ -44,7 +50,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const coffee = await coffeeCollection.findOne(query);
-      console.log(coffee);
+      // console.log(coffee);
       res.send(coffee);
     });
 
@@ -95,12 +101,52 @@ async function run() {
       });
     });
 
+    // handle order
+    app.post('/place-order/:coffeeId', async (req, res) => {
+      const id = req.params.coffeeId;
+      const orderData = req.body;
+      const result = await orderCollection.insertOne(orderData);
+      if (result.acknowledged) {
+        // update quantity from coffee collection
+        await coffeeCollection.updateOne(
+          { _id: new ObjectId(id) },
+          {
+            $inc: {
+              quantity: -1,
+            },
+          }
+        );
+      }
+
+      res.status(201).send(result);
+    });
+
+    // get all orders by customer email
+    app.get('/my-orders/:email', async (req, res) => {
+      const email = req.params.email;
+      const filter = { customerEmail: email };
+      const allOrders = await orderCollection.find(filter).toArray();
+
+      for (const order of allOrders) {
+        const orderId = order.coffeeId;
+        const fullCoffeeData = await coffeeCollection.findOne({
+          _id: new ObjectId(orderId),
+        });
+        order.name = fullCoffeeData.name;
+        order.photo = fullCoffeeData.photo;
+        order.price = fullCoffeeData.price;
+        order.quantity = fullCoffeeData.quantity;
+      }
+
+      res.send(allOrders);
+    });
+
     app.delete('/coffee-delete/:id', async (req, res) => {
       const id = req.params.id;
       console.log(id);
       const query = { _id: new ObjectId(id) };
       const deletingResult = await coffeeCollection.deleteOne(query);
-      console.log(deletingResult);
+      // console.log(deletingResult);
       res.send(deletingResult);
     });
 

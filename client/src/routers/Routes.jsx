@@ -11,6 +11,7 @@ import Users from '../components/Users';
 import PrivateRoute from '../provider/PrivateRoute';
 import axios from 'axios';
 import MyAddCoffees from '../components/MyAddCoffees';
+import MyOrders from '../components/MyOrders';
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AddCoffee />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'my-orders',
+        element: (
+          <PrivateRoute>
+            <MyOrders />
           </PrivateRoute>
         ),
       },
