@@ -66,6 +66,7 @@ async function run() {
     app.patch('/like/:coffeeId', async (req, res) => {
       const id = req.params.coffeeId;
       const email = req.body.email;
+      console.log(email);
       const query = { _id: new ObjectId(id) };
       const coffee = await coffeeCollection.findOne(query);
 
@@ -139,6 +140,23 @@ async function run() {
       }
 
       res.send(allOrders);
+    });
+
+    app.put('/coffee-update/:id', async (req, res) => {
+      const { id } = req.params;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedCoffee = req.body;
+      const updatedDoc = {
+        $set: updatedCoffee,
+      };
+      const result = await coffeeCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
     });
 
     app.delete('/coffee-delete/:id', async (req, res) => {

@@ -1,9 +1,10 @@
 import React from 'react';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 
 const UpdateCoffee = () => {
   const coffeeData = useLoaderData();
+  const navigate = useNavigate();
   const { _id, photo, quantity, price, name, details, supplier, taste } =
     coffeeData;
 
@@ -16,27 +17,28 @@ const UpdateCoffee = () => {
     console.log(updatedCoffee);
 
     // send Updated Coffee data to the db
-    // fetch(`http://localhost:3000/coffees/${_id}`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(updatedCoffee),
-    // })
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     if (data.modifiedCount) {
-    //       Swal.fire({
-    //         position: 'top-end',
-    //         icon: 'success',
-    //         title: 'Your coffee updated successfully',
-    //         showConfirmButton: false,
-    //         timer: 1000,
-    //       });
+    fetch(`${import.meta.env.VITE_API_URL}/coffee-update/${_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedCoffee),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.modifiedCount) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Your coffee updated successfully',
+            showConfirmButton: false,
+            timer: 1000,
+          });
 
-    //       // console.log('after update data', data);
-    //     }
-    //   });
+          // console.log('after update data', data);
+        }
+        navigate(`/coffee/${_id}`);
+      });
   };
 
   return (

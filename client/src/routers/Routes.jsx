@@ -53,9 +53,9 @@ export const router = createBrowserRouter([
       },
       {
         path: 'updateCoffee/:id',
-        // HydrateFallback: Loading,
-        // loader: ({ params }) =>
-        //   fetch(`http://localhost:3000/coffees/${params.id}`),
+        HydrateFallback: Loading,
+        loader: ({ params }) =>
+          fetch(`${import.meta.env.VITE_API_URL}/coffee/${params.id}`),
         element: (
           <PrivateRoute>
             <UpdateCoffee />
