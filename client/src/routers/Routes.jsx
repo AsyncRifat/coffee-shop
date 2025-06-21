@@ -63,16 +63,6 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'users',
-        // HydrateFallback: Loading,
-        // loader: () => fetch('http://localhost:3000/users'),
-        element: (
-          <PrivateRoute>
-            <Users />
-          </PrivateRoute>
-        ),
-      },
-      {
         path: 'my-added-coffee/:email',
         HydrateFallback: Loading,
         loader: ({ params }) =>

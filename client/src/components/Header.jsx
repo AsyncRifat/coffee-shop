@@ -28,9 +28,6 @@ const Header = () => {
           <NavLink to="/addCoffee" className="p-2">
             Add Coffee
           </NavLink>
-          <NavLink to="/users" className="p-2">
-            Users
-          </NavLink>
           <NavLink to={`/my-added-coffee/${user?.email}`} className="p-2">
             My Added coffee's
           </NavLink>

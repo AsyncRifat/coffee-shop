@@ -6,6 +6,7 @@ import { AuthContext } from '../provider/AuthContext';
 const AddCoffee = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+
   // console.log(user.email);
   const handleAddCoffee = e => {
     e.preventDefault();

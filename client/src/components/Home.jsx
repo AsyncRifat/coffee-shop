@@ -8,6 +8,7 @@ const Home = () => {
   const [coffees, setCoffees] = useState(
     Array.isArray(initialCoffees) ? initialCoffees : []
   );
+  // console.log(coffees);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
       {coffees.map(coffee => (
