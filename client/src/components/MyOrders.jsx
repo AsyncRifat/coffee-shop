@@ -1,22 +1,30 @@
-import axios from 'axios';
 import React, { Suspense, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../provider/AuthContext';
 // import OrderCard from './OrderCard';
 const OrderCard = React.lazy(() => import('./OrderCard'));
 import Loading from './loader/Loading';
+import useAxiosSecure from './hooks/useAxiosSecure';
 
 const MyOrders = () => {
   const { user } = useContext(AuthContext);
   const [order, setOrder] = useState([]);
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
 
-    axios(`${import.meta.env.VITE_API_URL}/my-orders/${user?.email}`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    })
+    axiosSecure(
+      `/my-orders/${user?.email}`
+
+      // I did these tasks in custom hooks useAxiosSecure
+
+      //follow: //'/my-orders/:email', headers+ --> localStorageVerifyToken
+      // {
+      // headers: {
+      //   authorization: `Bearer ${token}`,
+      // },
+      // }
+    )
       .then(data => {
         // console.log(data.data);
         setOrder(data?.data);
@@ -24,7 +32,7 @@ const MyOrders = () => {
       .catch(err => {
         console.log(err);
       });
-  }, [user]);
+  }, [user, axiosSecure]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">

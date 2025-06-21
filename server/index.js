@@ -3,16 +3,26 @@ require('dotenv').config();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 
 // middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ['http://localhost:5173'],
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 
 // local storage verify token
-const localStorageVerifyToken = (req, res, next) => {
-  const token = req?.headers?.authorization?.split(' ')[1];
+const jwtVerifyToken = (req, res, next) => {
+  const token = req?.cookies?.token;
+
+  // This line for localstorage token verify ----->>>>>(#1)
+  // const token = req?.headers?.authorization?.split(' ')[1];
   console.log(token);
 
   if (!token) {
@@ -56,12 +66,14 @@ async function run() {
       });
 
       // store token in the cookies
-      // res.cookie('token', token, {
-      //   httpOnly: true,
-      //   secure: false,
-      // });
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,
+      });
+      res.send({ success: true, message: 'cookies token set successfully' });
 
-      res.send({ token: token, message: 'jwt create successful' });
+      // send token in response for localstorage method: ------>>>(#1)
+      // res.send({ token: token, message: 'jwt create successful' });
     });
 
     app.get('/coffees', async (req, res) => {
@@ -165,14 +177,14 @@ async function run() {
     });
 
     // get all orders by customer email
-    app.get('/my-orders/:email', localStorageVerifyToken, async (req, res) => {
+    app.get('/my-orders/:email', jwtVerifyToken, async (req, res) => {
       const decodedEmail = req.decodedEmail;
-      console.log('email from JWT token ---->',decodedEmail);
+      console.log('email from JWT token ---->', decodedEmail);
 
       const email = req.params.email;
       console.log('email from params ---->', email);
 
-      if (decodedEmail!==email) {
+      if (decodedEmail !== email) {
         return res.status(403).send({ message: 'forbidden access' });
       }
 

@@ -45,7 +45,7 @@ const AuthProvider = ({ children }) => {
   // Sign Out
   const signOutUser = () => {
     setLoading(true);
-    localStorage.removeItem('token');
+    // localStorage.removeItem('token');
     return signOut(auth);
   };
 
@@ -57,17 +57,22 @@ const AuthProvider = ({ children }) => {
       if (currentUser?.email) {
         const user = { email: currentUser?.email };
         axios
-          .post(`${import.meta.env.VITE_API_URL}/jwt`, user)
+          .post(`${import.meta.env.VITE_API_URL}/jwt`, user, {
+            withCredentials: true, //mandatory for cookie in browser
+          })
           .then(res => {
             console.log(res.data);
-            localStorage.setItem('token', res.data.token);
+
+            // to store token in localstorage method only: ------>>>>(#1)
+            // localStorage.setItem('token', res.data.token);
           })
           .catch(err => {
             console.log(err);
           });
-      } else {
-        localStorage.removeItem('token');
       }
+      // else {
+      //   localStorage.removeItem('token');
+      // }
 
       setLoading(false);
     });
