@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../provider/AuthContext';
-import axios from 'axios';
+// import axios from 'axios';
 
 const SignIn = () => {
   const { signInUser, googleSignUp } = useContext(AuthContext);
@@ -16,31 +16,8 @@ const SignIn = () => {
     signInUser(email, password)
       .then(result => {
         console.log(result.user);
-        const signInInfo = {
-          email,
-          lastSignInTime: result.user?.metadata?.lastSignInTime,
-        };
-
-        // using axios
-        axios.patch('http://localhost:3000/users', signInInfo).then(data => {
-          console.log(data.data);
-        });
-
-        // update last sign in to the database (using fetch)
-        // fetch('http://localhost:3000/users', {
-        //   method: 'PATCH',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(signInInfo),
-        // })
-        //   .then(res => res.json())
-        //   .then(data => {
-        //     console.log('after update patch', data);
-        //   });
-
         e.target.reset();
-        navigate('/users');
+        navigate('/');
       })
       .catch(error => {
         console.log(error.message);

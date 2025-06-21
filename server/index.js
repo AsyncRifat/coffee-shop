@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -8,6 +9,25 @@ const port = process.env.PORT || 3000;
 // middleware
 app.use(cors());
 app.use(express.json());
+
+// local storage verify token
+const localStorageVerifyToken = (req, res, next) => {
+  const token = req?.headers?.authorization?.split(' ')[1];
+  console.log(token);
+
+  if (!token) {
+    return res.status(401).send({ message: 'unauthorized access' });
+  }
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: 'unauthorized access' });
+    }
+    console.log(decoded.email);
+
+    req.decodedEmail = decoded.email;
+    next();
+  });
+};
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(process.env.MONGODB_URI, {
@@ -24,6 +44,25 @@ async function run() {
     const database = client.db('coffee-store');
     const coffeeCollection = database.collection('coffees');
     const orderCollection = database.collection('orders');
+
+    // generate jwt
+    app.post('/jwt', (req, res) => {
+      // const user = { email: req.body.email };    // i can any data load not only email
+      const userEmail = req.body;
+
+      // token creation
+      const token = jwt.sign(userEmail, process.env.JWT_SECRET_KEY, {
+        expiresIn: '7d',
+      });
+
+      // store token in the cookies
+      // res.cookie('token', token, {
+      //   httpOnly: true,
+      //   secure: false,
+      // });
+
+      res.send({ token: token, message: 'jwt create successful' });
+    });
 
     app.get('/coffees', async (req, res) => {
       const allCoffee = await coffeeCollection.find().toArray();
@@ -105,6 +144,9 @@ async function run() {
     // handle order
     app.post('/place-order/:coffeeId', async (req, res) => {
       const id = req.params.coffeeId;
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid coffee ID' });
+      }
       const orderData = req.body;
       const result = await orderCollection.insertOne(orderData);
       if (result.acknowledged) {
@@ -123,8 +165,17 @@ async function run() {
     });
 
     // get all orders by customer email
-    app.get('/my-orders/:email', async (req, res) => {
+    app.get('/my-orders/:email', localStorageVerifyToken, async (req, res) => {
+      const decodedEmail = req.decodedEmail;
+      console.log('email from JWT token ---->',decodedEmail);
+
       const email = req.params.email;
+      console.log('email from params ---->', email);
+
+      if (decodedEmail!==email) {
+        return res.status(403).send({ message: 'forbidden access' });
+      }
+
       const filter = { customerEmail: email };
       const allOrders = await orderCollection.find(filter).toArray();
 

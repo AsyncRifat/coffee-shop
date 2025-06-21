@@ -35,10 +35,10 @@ const Header = () => {
             My Orders
           </NavLink>
 
-          <div className="rounded-full border-3 border-gray-400 mx-3">
+          <div className="rounded-full border-3 border-gray-400 mx-3 ">
             {user?.photoURL && (
               <img
-                className="w-6 rounded-full"
+                className="w-6 h-6 rounded-full object-cover "
                 src={user?.photoURL}
                 alt="avatar"
               />

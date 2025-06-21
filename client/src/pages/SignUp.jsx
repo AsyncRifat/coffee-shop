@@ -3,10 +3,11 @@ import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../provider/AuthContext';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+// import axios from 'axios';
 
 const SignUp = () => {
-  const { createUser, googleSignUp } = useContext(AuthContext);
+  const { createUser, googleSignUp, updateUser, setUser } =
+    useContext(AuthContext);
   const navigate = useNavigate();
   // console.log(createUser);
 
@@ -23,7 +24,7 @@ const SignUp = () => {
     // const email = formData.get('email');
     // const password = formData.get('password');
     // console.log(email, password);
-    const { email, password, ...restFormData } = Object.fromEntries(
+    const { email, password, photo, name } = Object.fromEntries(
       formData.entries()
     );
     // console.log(email, password, userProfile);
@@ -31,57 +32,28 @@ const SignUp = () => {
     createUser(email, password)
       .then(result => {
         // Signed up
-        // const user = result.user;
-        // console.log(user);
+        const user = result.user;
+        console.log(user);
 
-        // ami email keo pathai delam
-        const userProfile = {
-          email,
-          ...restFormData,
-          creationTime: result.user?.metadata?.creationTime,
-          lastSignInTime: result.user?.metadata?.lastSignInTime,
-        };
-
-        // using axios
-        axios.post('http://localhost:3000/users', userProfile).then(data => {
-          if (data.data.insertedId) {
+        // update
+        updateUser({ displayName: name, photoURL: photo })
+          .then(() => {
+            setUser({ ...user, displayName: name, photoURL: photo });
             Swal.fire({
               position: 'top-end',
               icon: 'success',
-              title: 'Your account is created',
+              title: 'Your account has been created',
               showConfirmButton: false,
               timer: 1500,
-              width: '250px',
+              width: '400px',
             });
-            // console.log('user added in "users" collection', data);
-            form.reset();
-          }
-        });
+          })
+          .catch(error => {
+            console.log(error.message);
+            setUser(user);
+          });
 
-        // send user info in db (using fetch)
-        // fetch('http://localhost:3000/users', {
-        //   method: 'POST',
-        //   headers: {
-        //     'content-type': 'application/json',
-        //   },
-        //   body: JSON.stringify(userProfile),
-        // })
-        //   .then(res => res.json())
-        //   .then(data => {
-        //     if (data.insertedId) {
-        //       Swal.fire({
-        //         position: 'top-end',
-        //         icon: 'success',
-        //         title: 'Your account is created',
-        //         showConfirmButton: false,
-        //         timer: 1500,
-        //         width: '250px',
-        //       });
-        //       // console.log('user added in "users" collection', data);
-        //       form.reset();
-        //     }
-        //   });
-        navigate('/users');
+        navigate('/');
       })
       .catch(error => {
         const errorCode = error.code;
@@ -95,7 +67,7 @@ const SignUp = () => {
     googleSignUp()
       .then(result => {
         console.log(result.user);
-        navigate('/')
+        navigate('/');
       })
       .catch(error => {
         console.log(error?.message || 'Something went wrong');
